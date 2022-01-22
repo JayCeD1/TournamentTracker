@@ -13,13 +13,18 @@ using TrackerLibrary.models;
 
 namespace TrackerUI
 {
-    public partial class CreatePrizeForm : Form
+    public partial class CreatePrizeForm : Form,IPrizeRequestor
     {
         IPrizeRequestor callingForm;
         public CreatePrizeForm(IPrizeRequestor caller)
         {
             InitializeComponent();
             callingForm = caller;
+        }
+
+        public void PrizeComplete(PrizeModel model)
+        {
+            throw new NotImplementedException();
         }
 
         private void createPrizeButton_Click(object sender, EventArgs e)

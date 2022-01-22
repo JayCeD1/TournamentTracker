@@ -14,6 +14,15 @@ namespace TrackerLibrary.DataAccess.TextHelpers
         {
             return $"C:\\Users\\Jessy\\source\\repos\\TournamentTracker\\{filename}";
         } 
+        /// <summary>
+        /// Is responsible for reading the contents of a file and converts them to List of string
+        /// </summary>
+        /// <param name="file">
+        /// is an extension file that takes in the fullfilepath 
+        /// </param>
+        /// <returns>
+        /// returns contents of a file in a List format of data-type string
+        /// </returns>
         public static List<string> LoadFile(this string file)
         {
             if (!File.Exists(file))
