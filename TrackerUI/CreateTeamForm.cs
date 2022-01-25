@@ -140,7 +140,7 @@ namespace TrackerUI
 
             GlobalConfig.Connection.CreateTeam(t);
 
-            callingForm.TeamComplete(t);
+            callingForm.TeamComplete(t);//Do you resolve the TeamComplete method depending on the calling class(callingForm) since its an interface?
             this.Close();
         }
     }

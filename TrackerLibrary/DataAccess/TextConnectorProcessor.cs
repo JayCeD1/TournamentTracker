@@ -120,13 +120,115 @@ namespace TrackerLibrary.DataAccess.TextHelpers
 
             if(people.Count == 0)
             {
-                return "";
+                return output;
             }
             foreach (PersonModel p in people)
             {
                 output += $"{p.Id}|";
             }
             output = output.Substring(0, output.Length - 1);
+
+            return output;
+        }
+        public static void SaveToTournamentFile(this List<TournamentModel> models, string filename)
+        {
+            List<string> lines = new();
+            foreach (TournamentModel tm in models)
+            {
+                lines.Add($"{ tm.Id }," +
+                            $"{ tm.TournamentName }," +
+                            $"{ tm.EntryFee }," +
+                            $"{ ConvertTeamListToString(tm.EnteredTeams) }," +
+                            $"{ ConvertPrizeListToString(tm.Prizes) }" +
+                            $"{ ConvertRoundsListToString(tm.Rounds) }");
+            }
+            File.WriteAllLines(filename.fullFilePath(), lines);
+        }
+        private static string ConvertTeamListToString(List<TeamModel> teams)
+        {
+            string output = "";
+            if(teams.Count == 0)
+            {
+                return "";
+            }
+            foreach (TeamModel t in teams)
+            {
+                output += $"{t.Id}|";
+            }
+            output = output.Substring(0, output.Length - 1);//for removing the last pipe from the output string.
+            return output;
+        } 
+        private static string ConvertPrizeListToString(List<PrizeModel> prizes)
+        {
+            string output = "";
+            if(prizes.Count == 0)
+            {
+                return output;
+            }
+            foreach (PrizeModel p in prizes)
+            {
+                output += $"{p.Id}";
+            }
+            output = output.Substring(0, output.Length - 1);
+            return output;
+        }
+        private static string ConvertRoundsListToString(List<List<MatchupModel>> rounds)
+        {
+            string output = "";
+            if (rounds.Count == 0)
+            {
+                return output;
+            }
+            foreach (List<MatchupModel> r in rounds)
+            {
+                output += $"{ ConvertMatchupListToString(r) }|";
+            }
+            output = output.Substring(0, output.Length - 1);
+            return output;
+        }
+        private static string ConvertMatchupListToString(List<MatchupModel> matchups)
+        {
+            string output = "";
+            if (matchups.Count == 0)
+            {
+                return output;
+            }
+            foreach (MatchupModel m in matchups)
+            {
+                output += $"{m.Id}^";
+            }
+            output = output.Substring(0, output.Length - 1);
+            return output;
+        }
+        public static List<TournamentModel> ConvertToTournamentModels(this List<string> lines,string teamFileName,string peopleFileName,string prizeFileName)
+        {
+            //id,tournaName,EntryFee,{id|id|id-Entered Teams},{id|id|id-Prizes},{Rounds-id^id^id|id^id^id|id^id^id}
+            List<TournamentModel> output = new();
+            List<PrizeModel> prizes = prizeFileName.fullFilePath().LoadFile().ConvertToPrizeModels();
+            List<TeamModel> teams = teamFileName.fullFilePath().LoadFile().ConvertToTeamModels(peopleFileName);
+
+            foreach (string line in lines)
+            {
+                string[] cols = line.Split(',');
+                TournamentModel tm = new();
+                tm.Id = int.Parse(cols[0]);
+                tm.TournamentName = cols[1];
+                tm.EntryFee = decimal.Parse(cols[2]);
+
+                string[] teamIds = cols[3].Split('|');
+                foreach (string id in teamIds)
+                {
+                    tm.EnteredTeams.Add(teams.Where(x => x.Id == int.Parse(id)).First());
+                }
+
+                string[] prizeIds = cols[4].Split('|');
+                foreach (string id in prizeIds)
+                {
+                    tm.Prizes.Add(prizes.Where(x => x.Id == int.Parse(id)).First());
+                }
+                //TODO - capture round information
+                output.Add(tm);
+            }
 
             return output;
         }
