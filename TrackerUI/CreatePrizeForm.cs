@@ -13,18 +13,13 @@ using TrackerLibrary.models;
 
 namespace TrackerUI
 {
-    public partial class CreatePrizeForm : Form,IPrizeRequestor
+    public partial class CreatePrizeForm : Form
     {
         IPrizeRequestor callingForm;
         public CreatePrizeForm(IPrizeRequestor caller)
         {
             InitializeComponent();
             callingForm = caller;
-        }
-
-        public void PrizeComplete(PrizeModel model)
-        {
-            throw new NotImplementedException();
         }
 
         private void createPrizeButton_Click(object sender, EventArgs e)
@@ -35,6 +30,8 @@ namespace TrackerUI
 
                 GlobalConfig.Connection.CreatePrize(model);
 
+                //the PrizeComplete will be resolved here depending on who is its caller, in this case its the CreateTournament Form
+                //thats the caller, therefore PrizeComplete method in CreateTournament form will be used.
                 callingForm.PrizeComplete(model);
                 this.Close();
                 //placeNameValue.Text = "";

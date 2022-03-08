@@ -75,7 +75,8 @@ namespace TrackerUI
 
         private void createPrizeButton_Click(object sender, EventArgs e)
         {
-            //call the create prize form
+            //call the create prize form 
+            //NB the "this" is an interface implemented by both the tournament and prize form
             CreatePrizeForm frm = new(this);
             frm.Show();
         }

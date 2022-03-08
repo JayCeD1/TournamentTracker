@@ -22,5 +22,6 @@ namespace TrackerLibrary.models
         /// from as the winner
         /// </summary>
         public MatchupModel ParentMatchup { get; set; }
+
     }
 }

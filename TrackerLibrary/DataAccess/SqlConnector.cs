@@ -113,7 +113,7 @@ namespace TrackerLibrary.DataAccess
             {
                 var p = new DynamicParameters();
                 p.Add("@TournamentId", model.Id);
-                p.Add("@PrizeId", team.Id);
+                p.Add("@TeamId", team.Id);
                 p.Add("@id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                 connection.Execute("dbo.spTournamentEntries_Insert", p, commandType: CommandType.StoredProcedure);
@@ -144,8 +144,22 @@ namespace TrackerLibrary.DataAccess
                     {
                         p = new DynamicParameters();
                         p.Add("@MatchupId", matchup.Id);
-                        p.Add("@ParentMatchupId", entry.ParentMatchup.Id);
-                        p.Add("@TeamCompeting", entry.TeamCompeting.Id);
+                        if (entry.ParentMatchup == null)
+                        {
+                            p.Add("@ParentMatchupId", null);
+                        }
+                        else
+                        {
+                            p.Add("@TeamCompeting", entry.ParentMatchup.Id);
+                        }
+                        if (entry.TeamCompeting == null)
+                        {
+                            p.Add("@TeamCompeting", null);
+                        }
+                        else
+                        {
+                            p.Add("@TeamCompeting", entry.TeamCompeting.Id);
+                        }
                         p.Add("@id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                         connection.Execute("dbo.spMatchupEntries_Insert", p, commandType: CommandType.StoredProcedure);

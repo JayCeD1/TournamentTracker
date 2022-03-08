@@ -19,7 +19,7 @@ namespace TrackerLibrary
             int rounds = FindNumberOfRounds(model.EnteredTeams.Count);
             int byes = NumberOfByes(rounds, model.EnteredTeams.Count);
             model.Rounds.Add(CreateFirstRound(byes,randomizedTeams));
-            CreateOtherRounds(model, rounds);
+            CreateOtherRounds(model, rounds); //the details of this function won't b run if no. of rounds less than 2
         }
         private static void CreateOtherRounds(TournamentModel model,int rounds)
         {
@@ -27,22 +27,22 @@ namespace TrackerLibrary
             List<MatchupModel> previousRound = model.Rounds[0];
             List<MatchupModel> currRound = new();
             MatchupModel currMatchup = new();
-            while(round < rounds)
+            while(round <= rounds)
             {
                 foreach (MatchupModel match in previousRound)
                 {
                     currMatchup.Entries.Add(new MatchupEntryModel { ParentMatchup = match });
-                    if(currMatchup.Entries.Count > 1)
+                    if(currMatchup.Entries.Count > 1) //if mo than 1 i.e 2 add the match-up ...match-up-entry z added here!
                     {
                         currMatchup.MatchupRound = round;
                         currRound.Add(currMatchup);
                         currMatchup = new();
                     }
                 }
-                model.Rounds.Add(currRound);
-                previousRound = currRound;
+                model.Rounds.Add(currRound); //adds a list of match-up-models to the tournament round
+                previousRound = currRound; //updates the new previous round
 
-                currRound = new();
+                currRound = new(); //resets the curRound var for reuse
                 round += 1;
             }
         }
@@ -53,11 +53,11 @@ namespace TrackerLibrary
             foreach (TeamModel team in teams)
             {
                 curr.Entries.Add(new MatchupEntryModel { TeamCompeting = team });
-                if(byes > 0 || curr.Entries.Count > 1)
+                if(byes > 0 || curr.Entries.Count > 1) //if a bye exists, then this match-up z done o if der r 2 teams
                 {
                     curr.MatchupRound = 1;
-                    output.Add(curr);
-                    curr = new();
+                    output.Add(curr); //add the match up if d above condition met.
+                    curr = new(); //?create a new match-up-entry-model on each iteration. //reusing the variable after populating it.restarting d model
                 }
                 if(byes > 0)
                 {
@@ -74,7 +74,8 @@ namespace TrackerLibrary
             {
                 totalTeams *= 2;
             }
-            return output = totalTeams - numberOfTeams;
+            output = totalTeams - numberOfTeams;
+            return output;
         }
         private static int FindNumberOfRounds(int teamCount)
         {
