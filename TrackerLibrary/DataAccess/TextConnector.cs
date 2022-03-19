@@ -99,5 +99,15 @@ namespace TrackerLibrary.DataAccess
         {
             return TeamFile.fullFilePath().LoadFile().ConvertToTeamModels(PeopleFile);
         }
+
+        public List<TournamentModel> GetTournament_All()
+        {
+            return TournamentFile.fullFilePath().LoadFile().ConvertToTournamentModels(TeamFile, PeopleFile, PrizesFile);
+        }
+
+        public void UpdateMatchup(MatchupModel model)
+        {
+            model.UpdateMatchupToFile();
+        }
     }
 }

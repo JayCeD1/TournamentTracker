@@ -10,8 +10,10 @@ namespace TrackerLibrary.DataAccess
         PrizeModel CreatePrize(PrizeModel model);
         PersonModel CreatePerson(PersonModel model);
         void CreateTournament(TournamentModel model);
+        void UpdateMatchup(MatchupModel model);
         List<PersonModel> GetPerson_All();
         List<TeamModel> GetTeam_All();
         TeamModel CreateTeam(TeamModel model);
+        List<TournamentModel> GetTournament_All();
     }
 }

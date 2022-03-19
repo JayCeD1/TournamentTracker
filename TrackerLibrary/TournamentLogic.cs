@@ -18,7 +18,7 @@ namespace TrackerLibrary
             List<TeamModel> randomizedTeams = RandomizeTeamOrder(model.EnteredTeams);
             int rounds = FindNumberOfRounds(model.EnteredTeams.Count);
             int byes = NumberOfByes(rounds, model.EnteredTeams.Count);
-            model.Rounds.Add(CreateFirstRound(byes,randomizedTeams));
+            model.Rounds.Add(CreateFirstRound(byes,randomizedTeams));//add a bye to 1st rounders
             CreateOtherRounds(model, rounds); //the details of this function won't b run if no. of rounds less than 2
         }
         private static void CreateOtherRounds(TournamentModel model,int rounds)
@@ -33,7 +33,7 @@ namespace TrackerLibrary
                 {
                     currMatchup.Entries.Add(new MatchupEntryModel { ParentMatchup = match });
                     if(currMatchup.Entries.Count > 1) //if mo than 1 i.e 2 add the match-up ...match-up-entry z added here!
-                    {
+                    {//i.e this z where we add the actual matchups for every mo than 2 entries
                         currMatchup.MatchupRound = round;
                         currRound.Add(currMatchup);
                         currMatchup = new();
