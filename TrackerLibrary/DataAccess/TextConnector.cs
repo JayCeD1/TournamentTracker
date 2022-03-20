@@ -16,7 +16,7 @@ namespace TrackerLibrary.DataAccess
         private const string MatchupFile = "MatchupModels.csv";
         private const string MatchupEntryFile = "MatchupEntryModels.csv";
 
-        public PersonModel CreatePerson(PersonModel model)
+        public void CreatePerson(PersonModel model)
         {
             List<PersonModel> people = PeopleFile.fullFilePath().LoadFile().ConvertToPersonModels();
 
@@ -28,10 +28,9 @@ namespace TrackerLibrary.DataAccess
             model.Id = currentId;
             people.Add(model);
             people.SaveToPeopleFile(PeopleFile);
-            return model; 
         }
 
-        public PrizeModel CreatePrize(PrizeModel model)
+        public void CreatePrize(PrizeModel model)
         {
             //load the text file
             //convert text to list of prize model
@@ -52,10 +51,9 @@ namespace TrackerLibrary.DataAccess
             //save the list<string> to the text file
             prizes.SaveToPrizeFile(PrizesFile);
 
-            return model;
         }
 
-        public TeamModel CreateTeam(TeamModel model)
+        public void CreateTeam(TeamModel model)
         {
             List<TeamModel> teams = TeamFile.fullFilePath().LoadFile().ConvertToTeamModels(PeopleFile);
             //find the max id
@@ -70,7 +68,6 @@ namespace TrackerLibrary.DataAccess
 
             teams.SaveToTeamFile(TeamFile);
 
-            return model;
         }
 
         public void CreateTournament(TournamentModel model)

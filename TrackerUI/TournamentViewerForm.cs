@@ -206,11 +206,30 @@ namespace TrackerUI
             }
             else if(teamTwoScore > teamOneScore)
             {
+                //team two wins
                 m.Winner = m.Entries[1].TeamCompeting;
             }
             else
             {
                 MessageBox.Show("I don't handle tie games");
+            }
+            //update the next round matchups
+            foreach (List<MatchupModel> rounds in tournament.Rounds) //loop thru the rounds
+            {
+                foreach (MatchupModel rm in rounds)
+                {
+                    foreach (MatchupEntryModel me in rm.Entries)
+                    {
+                        if (me.ParentMatchup != null) //all matchups greater than the 1st round have a parentmatchup
+                        {//if below checks any parent match up id corresponds to any after updating the score
+                            if (me.ParentMatchup.Id == m.Id) //check if the selected matchup id matches any in me.parent match up
+                            {
+                                me.TeamCompeting = m.Winner;
+                                GlobalConfig.Connection.UpdateMatchup(model: rm);
+                            } 
+                        }
+                    }
+                }
             }
             //refreshes the matchup list whenever the score button is clicked
             LoadMatchups((int)roundDropDown.SelectedItem);

@@ -494,7 +494,7 @@ namespace TrackerLibrary.DataAccess.TextHelpers
             File.WriteAllLines(GlobalConfig.MatchupEntryFile.fullFilePath(), lines);
          
         }
-       public static void UpdateEntryToFile(this MatchupEntryModel entry)
+        public static void UpdateEntryToFile(this MatchupEntryModel entry)
         {
             List<MatchupEntryModel> entries = GlobalConfig.MatchupEntryFile.fullFilePath().LoadFile().ConvertToMatchupEntryModels();
             MatchupEntryModel oldEntry = new();
