@@ -152,9 +152,41 @@ namespace TrackerUI
         {
             LoadMatchups((int)roundDropDown.SelectedItem);
         }
+        private string ValidateData()
+        {
+            string output = "";
+           // double teamOneScore = 0;
+            double teamTwoScore = 0;
 
+            bool scoreOneValid = double.TryParse(teamOneScoreValue.Text, out double teamOneScore);
+            bool scoreTwoValid = double.TryParse(teamTwoScoreValue.Text, out teamTwoScore);
+
+            if(!scoreOneValid)
+            {
+                output = "The score one value is not a valid number";
+            }
+            else if (!scoreTwoValid)
+            {
+                output = "The score two value is not a valid number";
+            }
+            else if (teamOneScore == 0 && teamTwoScore == 0)
+            {
+                output = "You did not enter a score for either teams";
+            }
+            else if(teamOneScore == teamTwoScore)
+            {
+                output = "We do not allow ties in this application";
+            }
+            return output;
+        }
         private void scoreButton_Click(object sender, EventArgs e)
         {
+            string errorMessage = ValidateData();
+            if (errorMessage.Length > 0)
+            {
+                MessageBox.Show($"Input error: {errorMessage}");
+                return;
+            }
             MatchupModel m = (MatchupModel)matchupListBox.SelectedItem;
             double teamOneScore = 0;
             double teamTwoScore = 0;
@@ -169,8 +201,8 @@ namespace TrackerUI
 
                         if (scoreValid)
                         {
-                            m.Entries[0].Score = teamOneScore;
-                            //teamOneScoreValue.Text = m.Entries[0].Score.ToString(); 
+                            m.Entries[0].Score = teamOneScore; //update model with the scores
+                           
                         }
                         else
                         {
@@ -189,7 +221,7 @@ namespace TrackerUI
 
                         if (scoreValid)
                         {
-                            m.Entries[1].Score = teamTwoScore;
+                            m.Entries[1].Score = teamTwoScore; //update model with the scores
                         }
                         else
                         {
@@ -199,42 +231,19 @@ namespace TrackerUI
                     }
                 }
             }
-            if(teamOneScore > teamTwoScore)
+            try
             {
-                //team one wins
-                m.Winner = m.Entries[0].TeamCompeting;
+                TournamentLogic.UpdateTournamentResults(tournament);//we are updating entire model thats why
+                                                                    //refreshes the matchup list whenever the score button is clicked
             }
-            else if(teamTwoScore > teamOneScore)
+            catch (Exception ex)//for catching the exception that wud have thrown in 
             {
-                //team two wins
-                m.Winner = m.Entries[1].TeamCompeting;
+
+                MessageBox.Show($"The application had the following error: {ex.Message}");
+                return;
             }
-            else
-            {
-                MessageBox.Show("I don't handle tie games");
-            }
-            //update the next round matchups
-            foreach (List<MatchupModel> rounds in tournament.Rounds) //loop thru the rounds
-            {
-                foreach (MatchupModel rm in rounds)
-                {
-                    foreach (MatchupEntryModel me in rm.Entries)
-                    {
-                        if (me.ParentMatchup != null) //all matchups greater than the 1st round have a parentmatchup
-                        {//if below checks any parent match up id corresponds to any after updating the score
-                            if (me.ParentMatchup.Id == m.Id) //check if the selected matchup id matches any in me.parent match up
-                            {
-                                me.TeamCompeting = m.Winner;
-                                GlobalConfig.Connection.UpdateMatchup(model: rm);
-                            } 
-                        }
-                    }
-                }
-            }
-            //refreshes the matchup list whenever the score button is clicked
             LoadMatchups((int)roundDropDown.SelectedItem);
 
-            GlobalConfig.Connection.UpdateMatchup(model: m);
         }
     }
 }
