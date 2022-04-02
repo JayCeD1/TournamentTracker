@@ -300,6 +300,16 @@ namespace TrackerLibrary.DataAccess
                 
             }
         }
-              
+
+        public void CompleteTournamentModel(TournamentModel model)
+        {
+            //[spTournamentComplete]
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(GlobalConfig.CnnString(db)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@id", model.Id);
+                connection.Execute("dbo.spTournamentComplete", p, commandType: CommandType.StoredProcedure);
+            }
+        }
     }
 }

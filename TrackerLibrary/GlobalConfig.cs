@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Text;
 using TrackerLibrary.DataAccess;
 
@@ -33,7 +34,12 @@ namespace TrackerLibrary
         public static string CnnString(string name)
         {
             var cs = $"Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog={name};Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            return cs;
+            //return cs;
+            return ConfigurationManager.ConnectionStrings[name].ConnectionString;
+        }
+        public static string AppKeyLookup(string key)
+        {
+            return ConfigurationManager.AppSettings[key];
         }
     }
 }
